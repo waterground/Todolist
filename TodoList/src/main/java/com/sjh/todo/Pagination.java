@@ -1,5 +1,8 @@
 package com.sjh.todo;
 
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class Pagination {
 	private int listSize = 8; // 보이는 페이지 수
 	private int rangeSize = 10; // 목록의 수
@@ -88,5 +91,14 @@ public class Pagination {
 			this.endPage = this.pageCnt;
 			this.next = false;
 		}
+	}
+	
+	public String makeQuery(int page, int range) {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance()
+				.queryParam("page", page)
+				.queryParam("range", range)
+				.build();
+		
+		return uriComponents.toUriString();
 	}
 }
