@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.mchange.v2.c3p0.DriverManagerDataSource;
+import com.sjh.todo.Pagination;
 import com.sjh.todo.Dto.TodoDto;
 
 @Repository
@@ -40,16 +41,18 @@ public class TodoDao implements ITodoDao {
 	}
 
 	@Override
-	public List<TodoDto> getDoneList() {
+	public List<TodoDto> getDoneList(final Pagination pagination) {
 		List<TodoDto> list = null;
 
-		final String sql = "SELECT * FROM todo WHERE result IS NOT NULL ORDER BY goalDate;";
-
+		final String sql = "SELECT * FROM todo WHERE result IS NOT NULL ORDER BY goalDate LIMIT ?, ?;";
+		
 		list = template.query(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setObject(1, pagination.getStartList());
+				pstmt.setObject(2, pagination.getListSize());
 				return pstmt;
 			}
 		}, new RowMapper<TodoDto>() {
@@ -73,16 +76,18 @@ public class TodoDao implements ITodoDao {
 	}
 
 	@Override
-	public List<TodoDto> getUndoneList() {
+	public List<TodoDto> getUndoneList(final Pagination pagination) {
 		List<TodoDto> list = null;
 
-		final String sql = "SELECT * FROM todo WHERE result IS NULL ORDER BY id;";
+		final String sql = "SELECT * FROM todo WHERE result IS NULL ORDER BY id LIMIT ?, ?;";
 
 		list = template.query(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setObject(1, pagination.getStartList());
+				pstmt.setObject(2, pagination.getListSize());
 				return pstmt;
 			}
 		}, new RowMapper<TodoDto>() {
@@ -175,6 +180,28 @@ public class TodoDao implements ITodoDao {
 				pstmt.setLong(1, id);
 			}
 		});
+		
+		return result;
+	}
+	
+	@Override
+	public int cntDoneTodo() {
+		int result = 0;
+		
+		String sql = "SELECT COUNT(*) FROM todo WHERE result IS NOT NULL;";
+		
+		result = template.queryForObject(sql, Integer.class);
+		
+		return result;
+	}
+	
+	@Override
+	public int cntUndoneTodo() {
+		int result = 0;
+		
+		String sql = "SELECT COUNT(*) FROM todo WHERE result IS NULL;";
+		
+		result = template.queryForObject(sql, Integer.class);
 		
 		return result;
 	}

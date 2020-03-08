@@ -19,7 +19,7 @@
 	</div>
 	<div class="content">
 		<a href="/todo/writeForm" class="btn btn-primary float-right">추가</a> 
-		<a class="btn btn-primary float-left" href="/todo/done">이전 목록 보기</a> <br>
+		<a class="btn btn-primary float-left" href="/todo/done?page=1&range=1">이전 목록 보기</a> <br>
 		<br>
 		<table class="table">
 			<!-- ToDo 목록 -->
@@ -52,6 +52,27 @@
 			</c:forEach>
 			</tbody>
 		</table>
+		<!-- 페이징  -->
+		<div class="text-center" style="margin:0 auto; width: 400px;">
+			<ul class="pagination">
+				<c:if test="${pagination.prev eq true}">
+					<li class="page-item"><a class="page-link" href="#"
+						onClick="prevEvent('${pagination.curPage}', '${pagination.curRange}', '${pagination.rangeSize}')">&lt;</a></li>
+				</c:if>
+
+				<c:forEach begin="${pagination.startPage}" end="${pagination.endPage}" var="idx">
+					<li
+						class="page-item <c:out value="${pagination.curPage == idx ? 'active' : ''}"/>"><a
+						class="page-link" href="#"
+						onClick="pageEvent('${idx}', '${pagination.curRange}', '${pagination.rangeSize}')">
+							${idx} </a></li>
+				</c:forEach>
+				<c:if test="${pagination.next eq true}">
+					<li class="page-item"><a class="page-link" href="#"
+						onClick="nextEvent('${pagination.curRange}', '${pagination.rangeSize}')">&gt;</a></li>
+				</c:if>
+			</ul>
+		</div>
 	</div>
 	<!-- todo 수정 -->
 	<div class="modal" id="modifyTodo" tabindex="-1" role="dialog">
@@ -96,13 +117,14 @@
 	</div>
 	<script> 
 		var id = null;
-		
+		var today = new Date();
 		
 		$("#datepicker").datepicker({
 			dateFormat: 'yy-mm-dd' //Input Display Format 변경
 			,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip 텍스트
             ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 부분 텍스트
             ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 부분 Tooltip 텍스트
+            ,minDate: new Date(today.setDate(today.getDate() + 1)) // 최소 내일이 goalDate가 되도록 설정
 		});
 		
 		$("#modifyTodo").on('show.bs.modal', function(event) {
@@ -126,11 +148,6 @@
 	        $('#datepicker').datepicker('setDate', goalDateVal);
 			
 		});
-		/*
-		$("#modifyTodo").on('hidden.bs.modal', function () {
-		  window.location = "/todo/main";
-		});
-			*/
 
 		function modify(){
 			var titleVal = $("#uTitle").val();
@@ -156,8 +173,8 @@
 				}),
 				success : function(result) {
 					if (result == "modify success") {
-						window.location = "/todo/main";
 						alert("할 일이 수정되었습니다");
+						window.location = "/todo/main?page=1&range=1";
 					}
 				},
 				error: function(request, status, error) {
@@ -165,6 +182,39 @@
 				}
 			});
 		}
+		
+
+		// 이전 버튼 이벤트
+		function prevEvent(page, range, rangeSize) {
+			var page = ((range - 1) * rangeSize);
+			var range = range - 1;
+
+			var url = "${cp}/main";
+			url += "?page=" + page + "&range=" + range;
+
+			location.href = url;
+		}
+
+		// 페이지 번호 버튼 이벤트
+		function pageEvent(page, range, rangeSize) {
+			var url = "${cp}/main";
+
+			url += "?page=" + page + "&range=" + range;
+
+			location.href = url;
+		}
+
+		// 다음 버튼 이벤트
+		function nextEvent(range, rangeSize) {
+			var page = parseInt(range * rangeSize) + 1;
+			var range = parseInt(range) + 1;
+
+			var url = "${cp}/main";
+			url += "?page=" + page + "&range=" + range;
+
+			location.href = url;
+		}
+
 	</script>
 </body>
 </html>

@@ -18,7 +18,7 @@
 		<h1>완료한 Todo 리스트</h1>
 	</div>
 	<div class="content">
-		 <a class="btn btn-primary float-left" href="/todo/main">현재 목록 보기</a> <br>
+		 <a class="btn btn-primary float-left" href="/todo/main?page=1&range=1">현재 목록 보기</a> <br>
 		<br>
 		<table class="table">
 			<!-- ToDo 목록 -->
@@ -54,6 +54,60 @@
 				</c:forEach>
 			</tbody>
 		</table>
+		<!-- 페이징  -->
+		<div class="text-center" style="margin:0 auto; width: 400px;">
+			<ul class="pagination">
+				<c:if test="${pagination.prev eq true}">
+					<li class="page-item"><a class="page-link" href="#"
+						onClick="prevEvent('${pagination.curPage}', '${pagination.curRange}', '${pagination.rangeSize}')">&lt;</a></li>
+				</c:if>
+
+				<c:forEach begin="${pagination.startPage}" end="${pagination.endPage}" var="idx">
+					<li
+						class="page-item <c:out value="${pagination.curPage == idx ? 'active' : ''}"/>"><a
+						class="page-link" href="#"
+						onClick="pageEvent('${idx}', '${pagination.curRange}', '${pagination.rangeSize}')">
+							${idx} </a></li>
+				</c:forEach>
+				<c:if test="${pagination.next eq true}">
+					<li class="page-item"><a class="page-link" href="#"
+						onClick="nextEvent('${pagination.curRange}', '${pagination.rangeSize}')">&gt;</a></li>
+				</c:if>
+			</ul>
+		</div>
 	</div>
+	<script>
+	// 이전 버튼 이벤트
+	function prevEvent(page, range, rangeSize) {
+		var page = ((range - 1) * rangeSize);
+		var range = range - 1;
+
+		var url = "${cp}/done";
+		url += "?page=" + page + "&range=" + range;
+
+		location.href = url;
+	}
+
+	// 페이지 번호 버튼 이벤트
+	function pageEvent(page, range, rangeSize) {
+		var url = "${cp}/done";
+
+		url += "?page=" + page + "&range=" + range;
+
+		location.href = url;
+	}
+
+	// 다음 버튼 이벤트
+	function nextEvent(range, rangeSize) {
+		var page = parseInt(range * rangeSize) + 1;
+		var range = parseInt(range) + 1;
+
+		var url = "${cp}/done";
+		url += "?page=" + page + "&range=" + range;
+
+		location.href = url;
+	}
+
+	</script>
 </body>
 </html>

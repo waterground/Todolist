@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,10 +24,20 @@
 				<form:label path="title">할 일 </form:label> 
 				<form:input path="title" class="form-control"/>
 			</div>
+			<c:if test="${error eq 'no title'}">
+				<small class="form-text" style="color:red;">
+					할 일을 입력해주세요
+				</small>
+			</c:if>
 			<div class="form-group">
 				<form:label path="name">이름 </form:label>
 				<form:input path="name" class="form-control"/>
 			</div>
+			<c:if test="${error eq 'no name'}">
+				<small class="form-text" style="color:red;">
+					이름을 입력해주세요
+				</small>
+			</c:if>
 			<div class="form-group">
 				<form:label path="priority">중요도</form:label><br/>
 				<form:radiobutton path="priority" value="상" label="상" checked="true"/>
@@ -39,15 +50,19 @@
 			</div>
 			<br> 
 			<button class="btn btn-primary float-right">완료</button>
+			<a href="${cp}/main?page=1&range=1" class="btn btn-primary float-right">취소</a>
 		</form:form>
 	</div>
 	<script>
 	$(function(){
+		var today = new Date();
+		
 		$("#datepicker").datepicker({
 			dateFormat: 'yy-mm-dd' //Input Display Format 변경
 			,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip 텍스트
             ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 부분 텍스트
             ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 부분 Tooltip 텍스트
+            ,minDate: new Date(today.setDate(today.getDate() + 1)) // 최소 내일이 goalDate가 되도록 설정
 		});
 		
 		//초기값을 오늘 날짜로 설정

@@ -2,6 +2,7 @@ package com.sjh.todo.service;
 
 import java.util.List;
 
+import com.sjh.todo.Pagination;
 import com.sjh.todo.Dto.TodoDto;
 
 public interface ITodoService {
@@ -12,8 +13,10 @@ public interface ITodoService {
 
 	void removeTodo(Long id);
 
-	List<TodoDto> listUpTodo(String type);
+	List<TodoDto> listUpTodo(String type, Pagination pagination);
 
 	void finishTodo(Long id);
+	
+	int countTodo(String type);
 
 }
