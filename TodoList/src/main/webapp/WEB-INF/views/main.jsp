@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +48,7 @@
 					<td><a class='btn btn-outline-warning' href='#' data-toggle='modal' data-target='#modifyTodo' 
 							data-id='${dto.id}' data-title='${dto.title}' data-name='${dto.name}'
 							data-priority='${dto.priority}' data-goaldate='${dto.goalDate}'>수정</a></td>
-					<td><a class='btn btn-outline-danger' href='/todo/delete/${dto.id}'>삭제</a></td>
+					<td><a class='btn btn-outline-danger' href="/todo/delete/${dto.id}">삭제</a></td>
 				</tr>
 			</c:forEach>
 			</tbody>

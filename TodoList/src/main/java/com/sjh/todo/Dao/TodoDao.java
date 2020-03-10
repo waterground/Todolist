@@ -8,36 +8,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.mchange.v2.c3p0.DriverManagerDataSource;
 import com.sjh.todo.Pagination;
 import com.sjh.todo.Dto.TodoDto;
 
 @Repository
 public class TodoDao implements ITodoDao {
-	private String user = "root"; // 사용자 이름
-	private String password = "123456"; // PW
-	private String db = "todo"; // DB이름
-	private String driver = "com.mysql.cj.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost:3306/" + db
-			+ "?characterEncoding=euckr&useUnicode=true&mysqlEncoding=euckr";
 
-	private DriverManagerDataSource dataSource;
 	private JdbcTemplate template;
-
-	public TodoDao() {
-		dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClass(driver);
-		dataSource.setJdbcUrl(url);
-		dataSource.setUser(user);
-		dataSource.setPassword(password);
-		template = new JdbcTemplate();
-		template.setDataSource(dataSource);
+	
+	public TodoDao(DataSource dataSource) {
+		this.template = new JdbcTemplate(dataSource);
 	}
 
 	@Override
